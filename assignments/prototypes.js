@@ -46,6 +46,21 @@
   - Give persons the ability to poop.
   - When pooping, the stomach should empty.
 
+  function Person(name,age) {
+    this.stomach = [];
+    
+    greet:function() {
+      return `Myname is name is ${name} and I am ${age} years old`;
+    },
+    eat:function(edibleStuff) {
+      if(edibleStuff) this.stomach.push(edibleStuff)
+    },
+    poop:function() {
+      if(this.stomach.length > 0) this.stomach =[];
+    }
+
+  }
+
   TASK 2
 
   - Build a Car constructor that takes model name and make.
@@ -56,12 +71,40 @@
   - Give cars the ability to be repaired.
   - A repaired car can be driven again.
 
+    function Car(name,make) {
+    this.odometer = 0;
+    this.inBadShapeDueTocrash = false;
+    
+    drive:funciton(distance) {
+      if(this.inBadShapeDueTocrash) return `I crashed at ${this.odometer} miles!`;
+      this.odometer += distance;
+    },
+    crash:function() {
+      if(!this.inBadShapeDueTocrash) this.inBadShapeDueTocrash = true;
+    },
+    repair:function() {
+      this.inBadShapeDueTocrash = false;
+    }
+
+  }
+
   TASK 3
 
   - Build a Baby constructor that subclasses the Person built earlier.
   - Babies of course inherit the ability to greet, which can be strange.
   - Babies should have the ability to play, which persons don't.
   - By playing, a string is returned with some text of your choosing.
+
+    function Baby() {
+       Person.call(this, name, age); 
+    }
+
+
+    Baby.prototype = Object.create(Person.prototype);
+
+    Baby.prototype.play = function() {
+      return "I am a baby and i love to play!"
+    }
 
   TASK 4
 
@@ -174,3 +217,57 @@
   console.log(mage.takeDamage()); // Bruce took damage.
   console.log(swordsman.destroy()); // Sir Mustachio was removed from the game.
 */
+
+//person
+  function Person(name,age) {
+    this.stomach = [];
+    this.age = age;
+    this.name = name;
+  }
+
+  Person.prototype.greet = function() {
+    return `Myname is name is ${name} and I am ${age} years old`;
+  }
+
+  Person.prototype.eat = function(edibleStuff) {
+    if(edibleStuff) this.stomach.push(edibleStuff)
+  }
+
+  Person.prototype.poop = function() {
+      if(this.stomach.length > 0) this.stomach = [];
+  }
+
+  //car
+  function Car(name,make) {
+    this.odometer = 0;
+    this.inBadShapeDueTocrash = false;
+    this.name = name;
+    this.make = make;
+  }
+
+  Car.prototype.drive =  function(distance) {
+    if(this.inBadShapeDueTocrash) return `I crashed at ${this.odometer} miles!`;
+    this.odometer += distance;
+  }
+
+  Car.prototype.crash =  function() {
+    if(this.inBadShapeDueTocrash) this.inBadShapeDueTocrash = true;
+  }
+
+  Car.prototype.repair =  function() {
+    this.inBadShapeDueTocrash = false;
+  }
+
+//Baby
+    function Baby(name,age) {
+      
+       Person.call(this, name, age); 
+    }
+
+    Baby.prototype = Object.create(Person.prototype);
+    
+    Baby.prototype.play = function() {
+      return "I am a baby and i love to play!"
+    }
+
+
