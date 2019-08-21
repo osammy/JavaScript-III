@@ -46,21 +46,6 @@
   - Give persons the ability to poop.
   - When pooping, the stomach should empty.
 
-  function Person(name,age) {
-    this.stomach = [];
-    
-    greet:function() {
-      return `Myname is name is ${name} and I am ${age} years old`;
-    },
-    eat:function(edibleStuff) {
-      if(edibleStuff) this.stomach.push(edibleStuff)
-    },
-    poop:function() {
-      if(this.stomach.length > 0) this.stomach =[];
-    }
-
-  }
-
   TASK 2
 
   - Build a Car constructor that takes model name and make.
@@ -95,22 +80,51 @@
   - Babies should have the ability to play, which persons don't.
   - By playing, a string is returned with some text of your choosing.
 
-    function Baby() {
-       Person.call(this, name, age); 
-    }
-
-
-    Baby.prototype = Object.create(Person.prototype);
-
-    Baby.prototype.play = function() {
-      return "I am a baby and i love to play!"
-    }
-
   TASK 4
 
   Use your imagination and come up with constructors that allow to build objects
   With amazing and original capabilities. Build 3 small ones, or a very
   complicated one with lots of state. Surprise us!
+//request for a book
+
+function Library(name, area, postCode) {
+  this.name = name;
+  this.area = area;
+  this.postCode = postCode;
+  this.books = [];
+}
+
+
+Library.prototype.getBooks = function() {
+  return this.books;
+}
+
+Library.prototype.getBookByISBN = function({ ISBN }) {
+  const allBooks = this.books
+}
+
+
+var myLibrary = new Library('Fingal Library', 'Malahide', 'K36 PK20');
+
+function Book(name, author, ISBN,booksInStock) {
+  this.name = name;
+  this.author = author;
+  this.ISBN = ISBN; 
+  this.isCheckedOut = false;
+  
+}
+
+
+
+Book.prototype.checkoutBook = function() {
+  this.isCheckedOut = true;
+}
+
+Book.prototype.borrow = function(book) {
+  if(book.ISBN) = this.book
+}
+
+var myBook = new Book('Eloquent JavaScript', 'Marijn Haverbeke', '1045435M');
 
 */
 
@@ -132,6 +146,15 @@
   * dimensions (These represent the character's size in the video game)
   * destroy() // prototype method that returns: `${this.name} was removed from the game.`
 */
+  function GameObject(name,dimensions,createdAt) {
+    this.name =  name;
+    this.dimensions = dimensions;
+    this.createdAt = createdAt;
+  }
+
+  GameObject.prototype.destroy = function() {
+    return `${this.name} was removed from the game.`;
+  }
 
 /*
   === CharacterStats ===
@@ -139,7 +162,16 @@
   * takeDamage() // prototype method -> returns the string '<object name> took damage.'
   * should inherit destroy() from GameObject's prototype
 */
+  function CharacterStats(name,dimensions,createdAt,healthPoints) {
+    this.healthPoints =  healthPoints;
+    GameObject.call(this,name,dimensions,createdAt);
+  }
 
+  CharacterStats.prototype = Object.create(GameObject.prototype);
+
+  CharacterStats.prototype.takeDamage = function() {
+    return `${this.name} took damage.`;
+  }
 /*
   === Humanoid (Having an appearance or character resembling that of a human.) ===
   * team
@@ -149,7 +181,25 @@
   * should inherit destroy() from GameObject through CharacterStats
   * should inherit takeDamage() from CharacterStats
 */
+  function Humanoid({createdAt,dimensions,healthPoints,name,team,weapons,language}) {
+    this.team =  team;
+    this.weapons = weapons;
+    this.language = language;
+    this.dimensions = dimensions;
+    this.healthPoints = healthPoints;
+    this.name = name;
+    this.createdAt = createdAt;
 
+    CharacterStats(this,name,dimensions,createdAt,healthPoints)
+    
+  }
+
+  Humanoid.prototype = Object.create(CharacterStats.prototype);
+
+
+  Humanoid.prototype.greet = function() {
+    return `${this.name} offers a greeting in ${this.language}.`;
+  }
 /*
   * Inheritance chain: GameObject -> CharacterStats -> Humanoid
   * Instances of Humanoid should have all of the same properties as CharacterStats and GameObject.
@@ -226,7 +276,7 @@
   }
 
   Person.prototype.greet = function() {
-    return `Myname is name is ${name} and I am ${age} years old`;
+    return `Myname is name is ${this.name} and I am ${this.age} years old`;
   }
 
   Person.prototype.eat = function(edibleStuff) {
@@ -260,7 +310,8 @@
 
 //Baby
     function Baby(name,age) {
-      
+       this.name = name;
+       this.age = age;
        Person.call(this, name, age); 
     }
 
@@ -270,4 +321,114 @@
       return "I am a baby and i love to play!"
     }
 
+    const baby = new Baby("Chelsea",1)
 
+//Library
+function Library(name, area, postCode) {
+  this.name = name;
+  this.area = area;
+  this.postCode = postCode;
+  this.books = [];
+}
+Library.prototype.checkoutBook = function(book) {
+  
+    const isFound = this.books.findIndex(function(el) {
+      return el.ISBN =  book.ISBN
+    })
+    if(isFound === -1) {
+      return "This book isnt available right now"
+    } else {
+      const newBooks = this.books.filter(el=> {
+        console.log(el.ISBN + " !=== " + book.ISBN)
+        return el.ISBN !== book.ISBN;
+      });
+      this.books = newBooks;
+      book.isCheckedOut = true; 
+
+    }
+  }
+Library.prototype.addBook = function(book) {
+  const weHaveThisBookAlready = this.books
+  .map(el=> el.ISBN)
+  .includes(book.ISBN)
+  if(!weHaveThisBookAlready) this.books.push(book);
+}
+var myLibrary = new Library('GTBank Library', 'Yaba', '23401');
+
+function Book(name, area, postCode, author, ISBN) {
+  Library.call(this, name, area, postCode);
+  this.name = name;
+  this.author = author;
+  this.ISBN = ISBN; 
+  this.isCheckedOut = false;
+}
+
+Book.prototype = Object.create(Library.prototype);
+
+
+var book1 = new Book('Head First Javascript', 'Fingal Library', 'LAGK36PK40', 'Sonia Carvendish', '104543115M');
+var book2 = new Book('Javascript Patterns', 'Sam Library', 'LAG63PK41', 'Samuel Imafidon', '1046565500M');
+
+// myLibrary.addBook(book1);
+// myLibrary.addBook(book2);
+// myLibrary.checkoutBook(book1);
+
+
+
+  const mage = new Humanoid({
+    createdAt: new Date(),
+    dimensions: {
+      length: 2,
+      width: 1,
+      height: 1,
+    },
+    healthPoints: 5,
+    name: 'Bruce',
+    team: 'Mage Guild',
+    weapons: [
+      'Staff of Shamalama',
+    ],
+    language: 'Common Tongue',
+  });
+  const swordsman = new Humanoid({
+    createdAt: new Date(),
+    dimensions: {
+      length: 2,
+      width: 2,
+      height: 2,
+    },
+    healthPoints: 15,
+    name: 'Sir Mustachio',
+    team: 'The Round Table',
+    weapons: [
+      'Giant Sword',
+      'Shield',
+    ],
+    language: 'Common Tongue',
+  });
+  const archer = new Humanoid({
+    createdAt: new Date(),
+    dimensions: {
+      length: 1,
+      width: 2,
+      height: 4,
+    },
+    healthPoints: 10,
+    name: 'Lilith',
+    team: 'Forest Kingdom',
+    weapons: [
+      'Bow',
+      'Dagger',
+    ],
+    language: 'Elvish',
+  });
+  console.log(mage.createdAt); // Today's date
+  console.log(archer.dimensions); // { length: 1, width: 2, height: 4 }
+  console.log(swordsman.healthPoints); // 15
+  console.log(mage.name); // Bruce
+  console.log(swordsman.team); // The Round Table
+  console.log(mage.weapons); // Staff of Shamalama
+  console.log(archer.language); // Elvish
+  console.log(archer.greet()); // Lilith offers a greeting in Elvish.
+  console.log(mage.takeDamage()); // Bruce took damage.
+  console.log(swordsman.destroy()); // Sir Mustachio was removed from the game.
